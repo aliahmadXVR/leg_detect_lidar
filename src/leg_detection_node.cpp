@@ -8,6 +8,8 @@
 #include <pcl/segmentation/extract_clusters.h>
 #include <visualization_msgs/Marker.h>
 #include <pcl/common/centroid.h>
+#include <std_msgs/String.h>
+
 
 class LaserScanToPointCloudConverter {
 public:
@@ -26,6 +28,9 @@ public:
 
         // Advertise the Marker topic
         markerPub = nh.advertise<visualization_msgs::Marker>("/clustered_marker_topic", 1);
+
+        // Create a publisher for the angle as a string message string
+        ros::Publisher angleStringPub = nh.advertise<std_msgs::String>("/mapped_angle_string", 1);
 
     }
 
@@ -82,9 +87,6 @@ public:
 
         *inputCloud = *filteredCloud;  // Update the input cloud with the filtered result
     }
-
-
-
 
     // Perform clustering on the point cloud
     void performClustering(const pcl::PointCloud<pcl::PointXYZ>::Ptr& inputCloud,
@@ -153,6 +155,15 @@ public:
         // Print the angle in degrees to the terminal
         ROS_INFO("Extracted Angle: %f degrees", mappedAngle);
         ROS_INFO("Extracted Range: %f Meters", range);
+
+        // Convert the mapped angle to a string
+        std::stringstream ss;
+        ss << mappedAngle;
+        std_msgs::String angleString;
+        angleString.data = ss.str();
+
+        // Publish the angle string on the topic
+        angleStringPub.publish(angleString);
     }
     }
 
@@ -207,13 +218,13 @@ public:
 }
 
 
-
 private:
     ros::NodeHandle nh;
     ros::Subscriber laserScanSub;
     ros::Publisher pointCloudPub;
     ros::Publisher clusteredPointCloudPub;
     ros::Publisher markerPub;
+    ros::Publisher angleStringPub;
 };
 
 int main(int argc, char** argv) {
