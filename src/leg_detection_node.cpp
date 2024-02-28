@@ -30,7 +30,7 @@ public:
         markerPub = nh.advertise<visualization_msgs::Marker>("/clustered_marker_topic", 1);
 
         // Create a publisher for the angle as a string message string
-        angleStringPub = nh.advertise<std_msgs::String>("/mapped_angle_string", 1);
+        angleStringPub = nh.advertise<std_msgs::String>("/angles_by_person_loc", 1);
 
     }
 
@@ -160,6 +160,7 @@ public:
             angleInDegrees-=180;
         }
 
+        angleInDegrees = int(angleInDegrees);
 
         // Print the angle in degrees to the terminal
         ROS_INFO("Extracted Angle: %f degrees", angleInDegrees);
@@ -168,7 +169,7 @@ public:
 
         // Convert the mapped angle to a string
         std::stringstream ss;
-        ss << mappedAngle<<","<<"0";
+        ss << angleInDegrees<<","<<"0";
         std_msgs::String angleString;
         angleString.data = ss.str();
 
