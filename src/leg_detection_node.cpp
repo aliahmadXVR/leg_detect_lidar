@@ -30,7 +30,7 @@ public:
         markerPub = nh.advertise<visualization_msgs::Marker>("/clustered_marker_topic", 1);
 
         // Create a publisher for the angle as a string message string
-        ros::Publisher angleStringPub = nh.advertise<std_msgs::String>("/mapped_angle_string", 1);
+        angleStringPub = nh.advertise<std_msgs::String>("/mapped_angle_string", 1);
 
     }
 
@@ -158,7 +158,7 @@ public:
 
         // Convert the mapped angle to a string
         std::stringstream ss;
-        ss << mappedAngle;
+        ss << mappedAngle<<","<<"0";
         std_msgs::String angleString;
         angleString.data = ss.str();
 
