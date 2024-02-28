@@ -163,7 +163,7 @@ public:
 
         // Print the angle in degrees to the terminal
         ROS_INFO("Extracted Angle: %f degrees", angleInDegrees);
-        ROS_INFO("Mapped Angle: %f degrees", mappedAngle);
+        // ROS_INFO("Mapped Angle: %f degrees", mappedAngle);
         ROS_INFO("Extracted Range: %f Meters", range);
 
         // Convert the mapped angle to a string
