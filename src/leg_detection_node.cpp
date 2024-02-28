@@ -149,11 +149,21 @@ public:
         // Assuming laser scan angle is in the range [-pi/2, pi/2] (adjust as needed)
         float range = centerPoint.y / sin(angle);
 
-        // Map the angle to the range [-100, 100]
-        float mappedAngle = (angleInDegrees * (100.0 / 145.0));
+        float mappedAngle;
+        if (angleInDegrees < -140) 
+        {
+            angleInDegrees+=180;
+        } 
+    
+        else if (angleInDegrees > 140)
+        {
+            angleInDegrees-=180;
+        }
+
 
         // Print the angle in degrees to the terminal
-        ROS_INFO("Extracted Angle: %f degrees", mappedAngle);
+        ROS_INFO("Extracted Angle: %f degrees", angleInDegrees);
+        ROS_INFO("Mapped Angle: %f degrees", mappedAngle);
         ROS_INFO("Extracted Range: %f Meters", range);
 
         // Convert the mapped angle to a string
