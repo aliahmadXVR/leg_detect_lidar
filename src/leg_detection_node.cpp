@@ -107,8 +107,8 @@ public:
         // Create the EuclideanClusterExtraction object
         pcl::EuclideanClusterExtraction<pcl::PointXYZ> ec;
         ec.setClusterTolerance(0.04);  // Set the distance threshold for clustering  0.04
-        ec.setMinClusterSize(25);     // Set the minimum cluster size 25
-        ec.setMaxClusterSize(60);    // Set the maximum cluster size 40
+        ec.setMinClusterSize(18);     // Set the minimum cluster size 25 25
+        ec.setMaxClusterSize(60);    // Set the maximum cluster size 40 60
         ec.setSearchMethod(tree);
         ec.setInputCloud(inputCloud);
         ec.extract(clusterIndices);
@@ -125,6 +125,7 @@ public:
     // Extract the center point from the clustered cloud and publish it as a marker with angle information
     void extractAndPublishMarker(const pcl::PointCloud<pcl::PointXYZ>::Ptr& clusteredCloud,
                              const sensor_msgs::LaserScan::ConstPtr& laserScanMsg) {
+    static float prevAngleInDegrees = 0.0; 
     if (!clusteredCloud->empty()) {
         // Compute the centroid of the clustered cloud
         Eigen::Vector4f centroid;
@@ -162,14 +163,30 @@ public:
 
         angleInDegrees = int(angleInDegrees);
 
+
         // Print the angle in degrees to the terminal
         ROS_INFO("Extracted Angle: %f degrees", angleInDegrees);
         // ROS_INFO("Mapped Angle: %f degrees", mappedAngle);
         ROS_INFO("Extracted Range: %f Meters", range);
 
+        if (std::abs(angleInDegrees - prevAngleInDegrees) > 20.0) {
+            // Update the previous angle
+            prevAngleInDegrees = angleInDegrees;
+        }
+
+
+        int tilt_angle = 0;
+        if (range < 0.7)
+        {
+            tilt_angle = 100;
+        }
+        
+        else tilt_angle = 0;
+
         // Convert the mapped angle to a string
         std::stringstream ss;
-        ss << angleInDegrees<<","<<"0";
+        // ss << angleInDegrees<<","<<"0";
+        ss << angleInDegrees<<","<<tilt_angle;
         std_msgs::String angleString;
         angleString.data = ss.str();
 
